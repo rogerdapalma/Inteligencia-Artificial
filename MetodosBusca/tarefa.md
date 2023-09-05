@@ -1,4 +1,4 @@
-##Problema dos Missionários e Canibais
+## <h1>  Problema dos Missionários e Canibais  </h1>
 
 Há 3 missionários e 3 canibais. Há também um barco que vai da margem 
 esquerda para a margem direita e vice-versa, sempre levando um ou duas
