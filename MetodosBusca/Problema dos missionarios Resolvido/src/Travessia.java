@@ -7,6 +7,7 @@ public class Travessia implements Estado {
     char barco; // 'e' para esquerda, 'd' para direita
     String op;
 
+     // Construtor da classe
     public Travessia(int missionariosEsquerda, int canibaisEsquerda, int missionariosDireita, int canibaisDireita, char barco, String op) {
         this.missionariosEsquerda = missionariosEsquerda;
         this.canibaisEsquerda = canibaisEsquerda;
@@ -18,21 +19,25 @@ public class Travessia implements Estado {
 
     @Override
     public String getDescricao() {
+        // Retorna uma descrição do estado atual
         return "(" + missionariosEsquerda + "M, " + canibaisEsquerda + "C, " + missionariosDireita + "M, " + canibaisDireita + "C, " + barco + ")";
     }
 
     @Override
     public boolean ehMeta() {
+        // Verifica se o estado atual é o estado meta desejado
         return missionariosEsquerda == 0 && canibaisEsquerda == 0 && missionariosDireita == 3 && canibaisDireita == 3 && barco == 'd';
     }
 
     @Override
     public int custo() {
+        // Retorna o custo do estado (neste caso, sempre 1)
         return 1;
     }
 
     @Override
     public List<Estado> sucessores() {
+        // Gera e retorna uma lista de estados sucessores válidos
         List<Estado> visitados = new ArrayList<>();
         levar1M(visitados);
         levar1C(visitados);
@@ -42,6 +47,7 @@ public class Travessia implements Estado {
         return visitados;
     }
 
+     // Método privado para verificar se um estado é válido
     private boolean ehValido(Travessia estado) {
         // Verifica se o número de canibais não é maior que o número de missionários em qualquer margem.
         if (estado.missionariosEsquerda > 0 && estado.missionariosEsquerda < estado.canibaisEsquerda) {
@@ -52,8 +58,10 @@ public class Travessia implements Estado {
         }
         return true;
     }
-
+    
+    // Métodos privados para gerar estados sucessores válidos
     private void levar1M(List<Estado> visitados) {
+        // Verifica se é possível levar 1 missionário
         if (barco == 'e' && missionariosEsquerda >= 1) {
             Travessia novo = new Travessia(missionariosEsquerda - 1, canibaisEsquerda, missionariosDireita + 1, canibaisDireita, 'd', "Levando 1 missionário para a direita");
             if (ehValido(novo)) {
@@ -68,6 +76,7 @@ public class Travessia implements Estado {
     }
 
     private void levar1C(List<Estado> visitados) {
+        // Verifica se é possível levar 1 canibal
         if (barco == 'e' && canibaisEsquerda >= 1) {
             Travessia novo = new Travessia(missionariosEsquerda, canibaisEsquerda - 1, missionariosDireita, canibaisDireita + 1, 'd', "Levando 1 canibal para a direita");
             if (ehValido(novo)) {
@@ -82,6 +91,7 @@ public class Travessia implements Estado {
     }
 
     private void levar1M1C(List<Estado> visitados) {
+        // Verifica se é possível levar 1 missionário e 1 canibal
         if (barco == 'e' && missionariosEsquerda >= 1 && canibaisEsquerda >= 1) {
             Travessia novo = new Travessia(missionariosEsquerda - 1, canibaisEsquerda - 1, missionariosDireita + 1, canibaisDireita + 1, 'd', "Levando 1 missionário e 1 canibal para a direita");
             if (ehValido(novo)) {
@@ -96,6 +106,7 @@ public class Travessia implements Estado {
     }
 
     private void levar2M(List<Estado> visitados) {
+        // Verifica se é possível levar 2 missionários
         if (barco == 'e' && missionariosEsquerda >= 2) {
             Travessia novo = new Travessia(missionariosEsquerda - 2, canibaisEsquerda, missionariosDireita + 2, canibaisDireita, 'd', "Levando 2 missionários para a direita");
             if (ehValido(novo)) {
@@ -110,6 +121,7 @@ public class Travessia implements Estado {
     }
 
     private void levar2C(List<Estado> visitados) {
+        // Verifica se é possível levar 2 canibais
         if (barco == 'e' && canibaisEsquerda >= 2) {
             Travessia novo = new Travessia(missionariosEsquerda, canibaisEsquerda - 2, missionariosDireita, canibaisDireita + 2, 'd', "Levando 2 canibais para a direita");
             if (ehValido(novo)) {
@@ -125,10 +137,12 @@ public class Travessia implements Estado {
 
      @Override
     public String toString() {
+          // Retorna uma representação em string do estado, incluindo a descrição da operação realizada
         return getDescricao() + " - " + op;
     }
 
     public static void main(String[] args) {
+        // Cria um estado inicial com 3 missionários e 3 canibais na margem esquerda
         Travessia estadoInicial = new Travessia(3, 3, 0, 0, 'e', "estado inicial");
 
         // chama busca em profundidade
