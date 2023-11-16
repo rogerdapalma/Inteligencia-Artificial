@@ -1,59 +1,77 @@
 import random
 
+# Classe que representa um Cromossomo no contexto do Algoritmo Genético
 class Cromossomo:
     def __init__(self, valor, estado_final):
-        self.valor = valor
-        self.aptidao = self.calcular_aptidao(estado_final)
+        # Inicializa um objeto Cromossomo com um valor e calcula sua aptidão
+        self.valor = valor  # Representação do cromossomo
+        self.aptidao = self.calcular_aptidao(estado_final)  # Valor de aptidão do cromossomo
 
     def calcular_aptidao(self, estado_final):
-        nota = 0
+        # Calcula a aptidão do cromossomo com base no estado final desejado
+        nota = 0  # Inicializa a pontuação do cromossomo
+
+        # Itera sobre cada posição no estado final e compara com o valor do cromossomo
         for i in range(len(estado_final)):
+            # Atribui pontos se o caractere na posição for parte do valor do cromossomo
             if estado_final[i] in self.valor:
                 nota += 5
+            # Atribui pontos adicionais se o caractere na posição for igual ao do estado final
             if self.valor[i] == estado_final[i]:
                 nota += 50
-        return nota
+
+        return nota  # Retorna a pontuação total do cromossomo
 
     def __lt__(self, other):
+        # Sobrecarga do operador de comparação menor que (<) para ordenação decrescente por aptidão
         return self.aptidao > other.aptidao
 
     def __eq__(self, other):
+        # Sobrecarga do operador de igualdade (==) para comparar se dois cromossomos têm o mesmo valor
         if isinstance(other, Cromossomo):
             return self.valor == other.valor
-        return False
+        return False  # Retorna False se o objeto comparado não for do tipo Cromossomo
 
+# Classe utilitária com métodos estáticos para geração de palavras aleatórias
 class Util:
-    letras = "abcdefghijklmnopqrstuvxwyz"
-    tamanho = len(letras)
+    letras = "abcdefghijklmnopqrstuvxwyz"  # Alfabeto utilizado para gerar palavras aleatórias
+    tamanho = len(letras)  # Tamanho do alfabeto
 
     @staticmethod
     def gerar_palavra(n):
+        # Gera uma palavra aleatória de tamanho n, utilizando o alfabeto definido
         return ''.join(random.choice(Util.letras) for _ in range(n))
 
+# Classe que representa o Algoritmo Genético (AG)
 class AG:
     def __init__(self, tamanho_populacao, estado_final, taxa_selecao, taxa_mutacao, qtd_geracoes):
-        self.populacao = []
-        self.nova_populacao = []
-        self.tamanho_populacao = tamanho_populacao
-        self.estado_final = estado_final
-        self.taxa_selecao = taxa_selecao
-        self.taxa_reproducao = 100 - taxa_selecao
-        self.taxa_mutacao = taxa_mutacao
-        self.qtd_geracoes = qtd_geracoes
+        # Inicializa o AG com parâmetros específicos
+        self.populacao = []  # População atual de cromossomos
+        self.nova_populacao = []  # Nova população gerada durante o processo evolutivo
+        self.tamanho_populacao = tamanho_populacao  # Tamanho da população
+        self.estado_final = estado_final  # Estado final desejado
+        self.taxa_selecao = taxa_selecao  # Taxa de seleção (porcentagem)
+        self.taxa_reproducao = 100 - taxa_selecao  # Taxa de reprodução (porcentagem)
+        self.taxa_mutacao = taxa_mutacao  # Taxa de mutação (porcentagem)
+        self.qtd_geracoes = qtd_geracoes  # Quantidade de gerações
 
     def gerar_populacao_inicial(self):
+        # Gera a população inicial de cromossomos com valores aleatórios
         for _ in range(self.tamanho_populacao):
             self.populacao.append(Cromossomo(Util.gerar_palavra(len(self.estado_final)), self.estado_final))
         self.ordenar_populacao()
 
     def ordenar_populacao(self):
+        # Ordena a população atual em ordem decrescente de aptidão
         self.populacao.sort()
 
     def exibir_populacao(self):
+        # Exibe os cromossomos e suas aptidões na população atual
         for cromossomo in self.populacao:
             print(f"Cromossomo: {cromossomo.valor} - {cromossomo.aptidao}")
 
     def selecionar_por_torneio(self):
+        # Realiza a seleção por torneio, adicionando os escolhidos à nova população
         self.nova_populacao.append(self.populacao[0])  # elitismo
 
         qtd_selecionados = int(self.taxa_selecao * len(self.populacao) / 100)
@@ -71,6 +89,7 @@ class AG:
                 i += 1
 
     def selecionar_por_roleta(self):
+        # Realiza a seleção por roleta, adicionando os escolhidos à nova população
         aptidao_total = sum(c.aptidao for c in self.populacao)
 
         for cromossomo in self.populacao:
@@ -89,6 +108,7 @@ class AG:
             sorteio = [c for c in sorteio if c != selecionado]
 
     def reproduzir(self):
+        # Realiza o processo de reprodução, gerando novos cromossomos na nova população
         qtd_reproduzidos = int(self.taxa_reproducao * len(self.populacao) / 100)
 
         i = 0
@@ -110,6 +130,7 @@ class AG:
             self.nova_populacao.pop()
 
     def mutar(self):
+        # Realiza o processo de mutação, alterando aleatoriamente o valor de alguns cromossomos
         qtd_mutantes = random.randint(0, len(self.populacao) // 5)
 
         for _ in range(qtd_mutantes):
@@ -126,6 +147,7 @@ class AG:
             mutante.aptidao = mutante.calcular_aptidao(self.estado_final)
 
     def executar(self):
+        # Executa o Algoritmo Genético, gerando gerações sucessivas e exibindo a evolução
         self.gerar_populacao_inicial()
         self.ordenar_populacao()
 
@@ -146,6 +168,7 @@ class AG:
             self.exibir_populacao()
 
 def main():
+    # Função principal para configurar e executar o Algoritmo Genético
     tamanho_populacao = int(input("Tamanho da população: "))
     estado_final = input("Palavra desejada: ")
     taxa_selecao = int(input("Taxa de seleção (entre 20 a 40%): "))
