@@ -1,4 +1,5 @@
-# Inteligencia-artificial
+# Inteligencia-artificial.
+Repositório dedicado às atividades realizadas na disciplina de Inteligencia artificial do curso de Ciência da Computação - UFN.
 <div style="display: inline_block"><br>  
   <img align="center" alt="Roger-Java" height="70" width="50" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original-wordmark.svg">
   
